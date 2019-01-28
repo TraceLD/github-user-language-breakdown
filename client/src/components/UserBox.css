@@ -1,0 +1,29 @@
+#user {
+    position: absolute;
+    top: 10%;
+    transform: translateY(-50%);
+    width: 60%;
+    height: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.avatar {
+    margin-top: 20%;
+    border-radius: 50%;
+    width: 125px;
+    height: 125px;
+}
+
+.avatarBox {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.username {
+    margin-top: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}

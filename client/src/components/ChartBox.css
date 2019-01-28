@@ -1,0 +1,16 @@
+#chart {
+    display: table;
+    position: absolute;
+    top: 32%;
+    transform: translateY(-50%);
+    width: 60%;
+    height: 55%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#js {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center
+}

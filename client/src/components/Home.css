@@ -1,0 +1,68 @@
+#link {
+  color: #ebebeb;
+  text-decoration: none;
+}
+
+#link2 {
+  margin-top: 0px;
+  padding-top: 32px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+
+#form {
+  border: 2px solid #ebebeb;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  text-align: center;
+}
+
+#button {
+  border: 2px solid #ebebeb;
+  color: #ebebeb;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#errorbutton {
+  border: 2px solid #ebebeb;
+  color: #ebebeb;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#error {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.App {
+  height: 100vh;
+}
+
+.page-wrap {
+  text-align: center;
+}
+
+.header {
+  padding-top: 10px;
+}
+
+.text {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.buttonDiv {
+  padding: 1%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
