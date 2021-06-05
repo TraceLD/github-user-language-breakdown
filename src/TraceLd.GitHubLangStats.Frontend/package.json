@@ -31,6 +31,7 @@
     "typescript": "^4.0.0"
   },
   "dependencies": {
+    "@tailwindcss/forms": "^0.3.3",
     "sirv-cli": "^1.0.0"
   }
 }

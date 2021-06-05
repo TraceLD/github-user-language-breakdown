@@ -1,3 +1,5 @@
+const { colors } = require("tailwindcss/defaultTheme");
+
 module.exports = {
   purge: {
     enabled: !process.env.ROLLUP_WATCH,
@@ -10,8 +12,15 @@ module.exports = {
     },
   },
   darkMode: false, // or 'media' or 'class'
+  plugins: [
+    require("@tailwindcss/forms"),
+  ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        gray: colors.blueGray,
+      },
+    },
   },
   variants: {
     extend: {},
