@@ -1,5 +1,6 @@
-import { FUNC_API_BASE_URL } from '../../config';
 import { ApiResult } from '../apiResult';
+
+const API_BASE: string = process.env.GLB_APP_API;
 
 /**
  * Combines a URL with the base URL of the backend API set in config.ts.
@@ -8,7 +9,7 @@ import { ApiResult } from '../apiResult';
  * @returns Combined URL.
  */
 function combineUrls(url: string): string {
-    return `${FUNC_API_BASE_URL}/${url}`;
+    return `${API_BASE}/${url}`;
 }
 
 /**
