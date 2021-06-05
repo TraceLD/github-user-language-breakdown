@@ -3,7 +3,7 @@ import { get } from './_api';
 
 export interface ILanguages {
     Name: string;
-    Languages: Map<string, number>;
+    Languages: { [x: string]: number };
 }
 
 export async function getLanguages(
