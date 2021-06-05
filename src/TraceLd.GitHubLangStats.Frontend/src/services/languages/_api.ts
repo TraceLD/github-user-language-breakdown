@@ -1,4 +1,4 @@
-import { ApiResult } from '../apiResult';
+import { ApiResult } from '@core/apiResult';
 
 const API_BASE: string = process.env.GLB_APP_API;
 

@@ -1,4 +1,4 @@
-import type { ApiResult } from '../apiResult';
+import type { ApiResult } from '@core/apiResult';
 import { get } from './_api';
 
 export interface ILanguages {

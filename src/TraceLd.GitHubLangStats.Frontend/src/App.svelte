@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { getLanguages } from "./api/languages/[githubName].json"
+    import { getLanguages } from "@services/languages/[githubName].json"
     const s: Map<string, number> = new Map<string, number>();
     
     onMount(async (): Promise<void> => {
