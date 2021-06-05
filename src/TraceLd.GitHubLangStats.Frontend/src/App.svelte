@@ -1,13 +1,15 @@
 <script lang="ts">
-    export let name: string;
+    import { onMount } from "svelte";
+    import { getLanguages } from "./api/languages/[githubName].json"
+    const s: Map<string, number> = new Map<string, number>();
+    
+    onMount(async (): Promise<void> => {
+        const r = await getLanguages("john01dav", false);
+        console.log(new Map(Object.entries(r.entity.Languages)));
+    });
 </script>
 
-<main>
-    <h1 class="text-lg text-red-500">Hello {name}!</h1>
-    <p>
-        Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte
-        apps.
-    </p>
+<main>    
 </main>
 
 <style global>
