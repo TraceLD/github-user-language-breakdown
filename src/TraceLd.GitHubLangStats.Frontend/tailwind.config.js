@@ -20,10 +20,15 @@ module.exports = {
       colors: {
         gray: colors.blueGray,
       },
+      fontFamily: {
+        body: ["Inter", "sans-serif"],
+      },
     },
   },
   variants: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require("@tailwindcss/forms"),
+  ],
 }

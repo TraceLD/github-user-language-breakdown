@@ -9,7 +9,6 @@
     "paths": {
       "@core/*": ["core/*"],
       "@services/*": ["services/*"],
-      "@components/*": ["components/*"],
       "@utils/*": ["utils/*"]
     }
   }

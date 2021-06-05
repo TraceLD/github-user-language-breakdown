@@ -1,16 +1,11 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import { getLanguages } from "@services/languages/[githubName].json"
-    import { getLanguagesChart } from "@services/chart";
-    const s: Map<string, number> = new Map<string, number>();
-    
-    onMount(async (): Promise<void> => {
-        const r = await getLanguages("john01dav", false);
-        getLanguagesChart(r.entity);
-    });
+    import Home from "./components/Home.svelte";
 </script>
 
-<main>    
+<main class="min-h-screen w-full font-body bg-gray-900">
+    <!-- Additional component for the main app to cricumvent -->
+    <!-- bad compile times with TailwindCSS when editing App.svelte -->
+    <Home />
 </main>
 
 <style global>
