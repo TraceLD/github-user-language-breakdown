@@ -11,7 +11,7 @@
   "dependencies": {
     "@octokit/rest": "^16.10.0",
     "body-parser": "^1.18.3",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "node-github-graphql": "^0.2.7"
   },
   "devDependencies": {
