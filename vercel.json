@@ -1,0 +1,14 @@
+{
+  "outputDirectory": "public",
+  "rewrites": [
+    {
+      "source": "/api/langs",
+      "destination": "/api/langs.rs"
+    }
+  ],
+  "functions": {
+    "api/langs.rs": {
+      "runtime": "vercel-rust@4.0.8"
+    }
+  }
+}
