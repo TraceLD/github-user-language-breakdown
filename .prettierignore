@@ -1,0 +1,14 @@
+node_packages/
+public/
+dist/
+temp/
+README.md
+LICENSE.md
+pnpm-lock.yaml
+pnpm-workspace.yaml
+package-lock.json
+Cargo.lock
+
+target/
+**/*.rs
+**/*.toml
