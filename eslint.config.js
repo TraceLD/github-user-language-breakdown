@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint';
 
 // TODO: Add TanStack Query ESLint plugin when it works with ESLint 9.
 export default tseslint.config(
-  { ignores: ['dist'] },
+  { ignores: ['dist', 'public'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
