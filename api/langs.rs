@@ -19,7 +19,7 @@ static CRAB: LazyLock<Octocrab> = LazyLock::new(|| {
         .unwrap()
 });
 
-#[derive(Deserialize)]
+#[derive(Default, Deserialize)]
 struct GetUserLangsReqParams {
     name: Option<String>,
     #[serde(rename = "isorg")]
@@ -30,12 +30,6 @@ struct GetUserLangsReqParams {
 struct GetUserLangsResponse {
     name: String,
     langs: HashMap<String, i64>,
-}
-
-impl Default for GetUserLangsReqParams {
-    fn default() -> Self {
-        Self { name: Option::default(), is_org: Option::default() }
-    }
 }
 
 #[tokio::main]
@@ -52,13 +46,13 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     };
 
     let repos = if request_params.is_org.is_some() {
-        get_repos_for_org(&*CRAB, &name).await
+        get_repos_for_org(&CRAB, &name).await
     } else {
-        get_repos_for_user(&*CRAB, &name).await
+        get_repos_for_user(&CRAB, &name).await
     };
 
     match repos {
-        Ok(repos) => match calculate_langs(&*CRAB, repos, Option::default()).await {
+        Ok(repos) => match calculate_langs(&CRAB, repos, Option::default()).await {
             Ok(langs) => {
                 let res = GetUserLangsResponse {
                     name,
