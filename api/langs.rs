@@ -1,18 +1,27 @@
 use gulb_backend::api_utils::missing_query_param;
 use gulb_backend::api_utils::{problem_details, ErrorConverter};
+use gulb_backend::config::Config;
 use gulb_backend::github_fetch::{get_repos_for_org, get_repos_for_user};
 use gulb_backend::langs_calculator::calculate_langs;
-use gulb_backend::CRAB;
 
+use octocrab::Octocrab;
 use problem_details::ProblemDetails;
 use serde::Serialize;
 use std::collections::HashMap;
+use std::sync::LazyLock;
 use url::Url;
 use vercel_runtime::run;
 use vercel_runtime::{http::ok, Body, Error, Request, Response};
 
 const NAME_PARAM: &str = "name";
 const IS_ORG_PARAM: &str = "isorg";
+
+static CRAB: LazyLock<Octocrab> = LazyLock::new(|| {
+    Octocrab::builder()
+        .personal_token(Config::from_env().unwrap().github_token)
+        .build()
+        .unwrap()
+});
 
 #[derive(Serialize)]
 struct GetUserLangsResponse {

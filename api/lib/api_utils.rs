@@ -3,12 +3,23 @@ use std::str::FromStr;
 use http::{Response, StatusCode};
 
 pub use problem_details::ProblemDetails;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use vercel_runtime::Body;
 
-#[derive(serde::Serialize)]
+pub trait ErrorConverter {
+    fn from_octocrab_err(err: octocrab::Error) -> Self;
+    fn from_calc_err(err: crate::langs_calculator::LangCalcError) -> Self;
+}
+
+#[derive(Deserialize, Serialize, Clone)]
 pub struct ErrorsExt<T> {
-    errors: Vec<T>,
+    pub errors: Vec<T>,
+}
+
+#[derive(Deserialize, Serialize, Clone)]
+pub struct MissingParameterDetails {
+    pub detail: String,
+    pub parameter: String,
 }
 
 impl<T> ErrorsExt<T> {
@@ -17,26 +28,10 @@ impl<T> ErrorsExt<T> {
     }
 }
 
-#[derive(serde::Serialize)]
-pub struct MissingParameterDetails {
-    detail: String,
-    parameter: String,
-}
-
-impl MissingParameterDetails {
-    pub fn new(parameter_name: impl Into<String>) -> Self {
-        let parameter_string = parameter_name.into();
-
-        MissingParameterDetails {
-            detail: format!("The query parameter {} is required", parameter_string),
-            parameter: parameter_string,
-        }
+impl<T> Default for ErrorsExt<T> {
+    fn default() -> Self {
+        Self { errors: vec![] }
     }
-}
-
-pub trait ErrorConverter {
-    fn from_octocrab_err(err: octocrab::Error) -> Self;
-    fn from_calc_err(err: crate::langs_calculator::LangCalcError) -> Self;
 }
 
 impl ErrorConverter for ProblemDetails {
@@ -65,6 +60,17 @@ impl ErrorConverter for ProblemDetails {
     }
 }
 
+impl MissingParameterDetails {
+    pub fn new(parameter_name: impl Into<String>) -> Self {
+        let parameter_string = parameter_name.into();
+
+        MissingParameterDetails {
+            detail: format!("The query parameter {} is required", parameter_string),
+            parameter: parameter_string,
+        }
+    }
+}
+
 pub fn missing_query_param(
     param_name: impl Into<String>,
 ) -> Result<Response<Body>, vercel_runtime::Error> {
@@ -85,11 +91,6 @@ pub fn missing_query_param(
     ext_problem_details(&details)
 }
 
-pub fn create_internal_server_err_details() -> ProblemDetails {
-    problem_details::ProblemDetails::from_status_code(StatusCode::INTERNAL_SERVER_ERROR)
-        .with_detail("An Internal Server Error has occurred")
-}
-
 pub fn problem_details(problem: &ProblemDetails) -> Result<Response<Body>, vercel_runtime::Error> {
     Ok(Response::builder()
         .status(&problem.status.unwrap_or(StatusCode::INTERNAL_SERVER_ERROR))
@@ -107,4 +108,9 @@ where
         .status(&problem.status.unwrap_or(StatusCode::INTERNAL_SERVER_ERROR))
         .header("Content-Type", "application/json")
         .body(serde_json::to_string(&problem).unwrap().into())?)
+}
+
+fn create_internal_server_err_details() -> ProblemDetails {
+    problem_details::ProblemDetails::from_status_code(StatusCode::INTERNAL_SERVER_ERROR)
+        .with_detail("An Internal Server Error has occurred")
 }

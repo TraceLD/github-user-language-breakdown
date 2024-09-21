@@ -14,7 +14,6 @@ serde_json = { version = "1.0.127", features = ["raw_value"] }
 url = "2.5.2"
 vercel_runtime = "1.1.4"
 octocrab = { version = "0.39.0", features = ["stream"] }
-anyhow = "1.0.88"
 secrecy = "0.8.0"
 thiserror = "1.0.63"
 problem_details = "0.6.0"
