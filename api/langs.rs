@@ -47,21 +47,21 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     let query_str = req.uri().query().unwrap_or("");
     let request_params: GetUserLangsReqParams = serde_urlencoded::from_str(query_str).unwrap_or_default();
 
-    let Some(name) = &request_params.name else {
+    let Some(name) = request_params.name else {
         return missing_query_param("name");
     };
 
     let repos = if request_params.is_org.is_some() {
-        get_repos_for_org(&*CRAB, name).await
+        get_repos_for_org(&*CRAB, &name).await
     } else {
-        get_repos_for_user(&*CRAB, name).await
+        get_repos_for_user(&*CRAB, &name).await
     };
 
     match repos {
         Ok(repos) => match calculate_langs(&*CRAB, repos, Option::default()).await {
             Ok(langs) => {
                 let res = GetUserLangsResponse {
-                    name: name.to_string(),
+                    name,
                     langs,
                 };
 
