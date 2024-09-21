@@ -6,15 +6,11 @@ use gulb_backend::langs_calculator::calculate_langs;
 
 use octocrab::Octocrab;
 use problem_details::ProblemDetails;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::LazyLock;
-use url::Url;
 use vercel_runtime::run;
 use vercel_runtime::{http::ok, Body, Error, Request, Response};
-
-const NAME_PARAM: &str = "name";
-const IS_ORG_PARAM: &str = "isorg";
 
 static CRAB: LazyLock<Octocrab> = LazyLock::new(|| {
     Octocrab::builder()
@@ -23,10 +19,23 @@ static CRAB: LazyLock<Octocrab> = LazyLock::new(|| {
         .unwrap()
 });
 
+#[derive(Deserialize)]
+struct GetUserLangsReqParams {
+    name: Option<String>,
+    #[serde(rename = "isorg")]
+    is_org: Option<String>,
+}
+
 #[derive(Serialize)]
 struct GetUserLangsResponse {
     name: String,
     langs: HashMap<String, i64>,
+}
+
+impl Default for GetUserLangsReqParams {
+    fn default() -> Self {
+        Self { name: Option::default(), is_org: Option::default() }
+    }
 }
 
 #[tokio::main]
@@ -35,14 +44,14 @@ async fn main() -> Result<(), Error> {
 }
 
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
-    let parsed_url = Url::parse(&req.uri().to_string()).unwrap();
-    let hash_query: HashMap<String, String> = parsed_url.query_pairs().into_owned().collect();
+    let query_str = req.uri().query().unwrap_or("");
+    let request_params: GetUserLangsReqParams = serde_urlencoded::from_str(query_str).unwrap_or_default();
 
-    let Some(name) = hash_query.get(NAME_PARAM) else {
-        return missing_query_param(NAME_PARAM);
+    let Some(name) = &request_params.name else {
+        return missing_query_param("name");
     };
 
-    let repos = if let Some(_) = hash_query.get(IS_ORG_PARAM) {
+    let repos = if request_params.is_org.is_some() {
         get_repos_for_org(&*CRAB, name).await
     } else {
         get_repos_for_user(&*CRAB, name).await
