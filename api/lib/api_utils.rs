@@ -2,13 +2,16 @@ use std::str::FromStr;
 
 use http::{Response, StatusCode};
 
-pub use problem_details::ProblemDetails;
 use serde::{Deserialize, Serialize};
 use vercel_runtime::Body;
 
+use crate::langs_calculator::LangCalcError;
+
+pub use problem_details::ProblemDetails;
+
 pub trait ErrorConverter {
     fn from_octocrab_err(err: octocrab::Error) -> Self;
-    fn from_calc_err(err: crate::langs_calculator::LangCalcError) -> Self;
+    fn from_calc_err(err: LangCalcError) -> Self;
 }
 
 #[derive(Deserialize, Serialize, Clone)]
@@ -23,7 +26,7 @@ pub struct MissingParameterDetails {
 }
 
 impl<T> ErrorsExt<T> {
-    pub fn new(errors: Vec<T>) -> Self {
+    pub const fn new(errors: Vec<T>) -> Self {
         Self { errors }
     }
 }
@@ -39,8 +42,8 @@ impl ErrorConverter for ProblemDetails {
         match err {
             octocrab::Error::GitHub {
                 source,
-                backtrace: _,
-            } => problem_details::ProblemDetails::new()
+                ..
+            } => Self::new()
                 .with_title("GitHub API Error")
                 .with_status(source.status_code)
                 .with_detail(source.message),
@@ -49,9 +52,9 @@ impl ErrorConverter for ProblemDetails {
         }
     }
 
-    fn from_calc_err(err: crate::langs_calculator::LangCalcError) -> Self {
+    fn from_calc_err(err: LangCalcError) -> Self {
         match err {
-            crate::langs_calculator::LangCalcError::OctocrabError(err) => {
+            LangCalcError::OctocrabError(err) => {
                 Self::from_octocrab_err(err)
             }
 
@@ -64,8 +67,8 @@ impl MissingParameterDetails {
     pub fn new(parameter_name: impl Into<String>) -> Self {
         let parameter_string = parameter_name.into();
 
-        MissingParameterDetails {
-            detail: format!("The query parameter {} is required", parameter_string),
+        Self {
+            detail: format!("The query parameter {parameter_string} is required"),
             parameter: parameter_string,
         }
     }

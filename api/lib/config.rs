@@ -13,7 +13,7 @@ impl Config {
         let env_var_value = env::var(TOKEN_ENV_VAR)?;
         let secret_string = SecretString::from(env_var_value);
 
-        let config = Config {
+        let config = Self {
             github_token: secret_string,
         };
 
