@@ -14,7 +14,7 @@ pub trait ErrorConverter {
     fn from_calc_err(err: LangCalcError) -> Self;
 }
 
-#[derive(Deserialize, Serialize, Clone)]
+#[derive(Deserialize, Serialize, Clone, Default)]
 pub struct ErrorsExt<T> {
     pub errors: Vec<T>,
 }
@@ -28,12 +28,6 @@ pub struct MissingParameterDetails {
 impl<T> ErrorsExt<T> {
     pub const fn new(errors: Vec<T>) -> Self {
         Self { errors }
-    }
-}
-
-impl<T> Default for ErrorsExt<T> {
-    fn default() -> Self {
-        Self { errors: vec![] }
     }
 }
 
