@@ -11,7 +11,7 @@ pub enum LangCalcError {
     #[error("GitHub API error")]
     OctocrabError(#[from] octocrab::Error),
     #[error("invalid repo object")]
-    InvalidRepoObject(),
+    InvalidRepoObject,
     #[error("unknown error")]
     Unknown,
 }
@@ -35,7 +35,7 @@ pub async fn calculate_langs(
             break;
         }
 
-        if let Some(true) = repo.fork {
+        if repo.fork == Some(true) {
             continue;
         }
 
@@ -48,7 +48,7 @@ pub async fn calculate_langs(
         for (lang, bytes) in repo_langs {
             results
                 .entry(lang)
-                .and_modify(|count| *count += bytes)
+                .and_modify(|count| *count = count.saturating_add(bytes))
                 .or_insert(bytes);
         }
 

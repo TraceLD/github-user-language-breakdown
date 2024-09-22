@@ -6,15 +6,25 @@ use gulb_backend::langs_calculator::calculate_langs;
 
 use octocrab::Octocrab;
 use problem_details::ProblemDetails;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::LazyLock;
-use url::Url;
 use vercel_runtime::run;
 use vercel_runtime::{http::ok, Body, Error, Request, Response};
 
-const NAME_PARAM: &str = "name";
-const IS_ORG_PARAM: &str = "isorg";
+static CRAB: LazyLock<Octocrab> = LazyLock::new(|| {
+    Octocrab::builder()
+        .personal_token(Config::from_env().unwrap().github_token)
+        .build()
+        .unwrap()
+});
+
+#[derive(Default, Deserialize)]
+struct GetUserLangsReqParams {
+    name: Option<String>,
+    #[serde(rename = "isorg")]
+    is_org: Option<String>,
+}
 
 static CRAB: LazyLock<Octocrab> = LazyLock::new(|| {
     Octocrab::builder()
@@ -35,24 +45,24 @@ async fn main() -> Result<(), Error> {
 }
 
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
-    let parsed_url = Url::parse(&req.uri().to_string()).unwrap();
-    let hash_query: HashMap<String, String> = parsed_url.query_pairs().into_owned().collect();
+    let query_str = req.uri().query().unwrap_or("");
+    let request_params: GetUserLangsReqParams = serde_urlencoded::from_str(query_str).unwrap_or_default();
 
-    let Some(name) = hash_query.get(NAME_PARAM) else {
-        return missing_query_param(NAME_PARAM);
+    let Some(name) = request_params.name else {
+        return missing_query_param("name");
     };
 
-    let repos = if let Some(_) = hash_query.get(IS_ORG_PARAM) {
-        get_repos_for_org(&*CRAB, name).await
+    let repos = if request_params.is_org.is_some() {
+        get_repos_for_org(&CRAB, &name).await
     } else {
-        get_repos_for_user(&*CRAB, name).await
+        get_repos_for_user(&CRAB, &name).await
     };
 
     match repos {
-        Ok(repos) => match calculate_langs(&*CRAB, repos, Option::default()).await {
+        Ok(repos) => match calculate_langs(&CRAB, repos, Option::default()).await {
             Ok(langs) => {
                 let res = GetUserLangsResponse {
-                    name: name.to_string(),
+                    name,
                     langs,
                 };
 

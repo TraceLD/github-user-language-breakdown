@@ -19,6 +19,7 @@ thiserror = "1.0.63"
 problem_details = "0.6.0"
 http = "1.1.0"
 futures = "0.3.30"
+serde_urlencoded = "0.7.1"
 
 [lib]
 path = "api/lib/lib.rs"
