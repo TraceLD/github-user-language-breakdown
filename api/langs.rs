@@ -26,13 +26,6 @@ struct GetUserLangsReqParams {
     is_org: Option<String>,
 }
 
-static CRAB: LazyLock<Octocrab> = LazyLock::new(|| {
-    Octocrab::builder()
-        .personal_token(Config::from_env().unwrap().github_token)
-        .build()
-        .unwrap()
-});
-
 #[derive(Serialize)]
 struct GetUserLangsResponse {
     name: String,
