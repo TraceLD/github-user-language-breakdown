@@ -46,3 +46,4 @@ public-ssr
 *.sw?
 .vercel
 *.tsbuildinfo
+.env*.local
